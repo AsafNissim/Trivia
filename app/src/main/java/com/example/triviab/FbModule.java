@@ -12,38 +12,45 @@ import com.google.firebase.database.ValueEventListener;
 
 public class FbModule {
 
-    private Context context;
+    private Context context;  // משתנה לאחסון ההפניה לפעילות (MainActivity)
 
+    // בנאי של המודול, מקבל את הקונטקסט של MainActivity
     public FbModule(Context context) {
         this.context = context; // הפניה ל MainActivity
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("color");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();  // יצירת אובייקט של FirebaseDatabase
+        DatabaseReference reference = database.getReference("color");  // הפניה ל-"color" במסד הנתונים
 
+        // מאזין לשינויים בערך של ה-"color" במסד הנתונים
         reference.addValueEventListener(
                 new ValueEventListener() {
+                    // פעולה שמתבצעת כאשר יש שינוי בנתונים
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String str = snapshot.getValue(String.class);
-                        if(str != null)
+                        String str = snapshot.getValue(String.class);  // שליפת הערך כ-string
+                        if(str != null)  // אם יש ערך
                         {
+                            // קריאה לפונקציה ב-MainActivity להעברת הצבע הנבחר
                             ((MainActivity)context).setNewColorFromFb(str);
                         }
                     }
 
+                    // פעולה שמתבצעת אם יש שגיאה בקריאת הנתונים
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        // במקרה של שגיאה, לא עושים כלום
                     }
                 }
         );
 
     }
 
+    // פונקציה ששולחת את הצבע החדש למסד הנתונים ב-Firebase
     public void writeBackgroundColorToFb(String color)
     {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("color");
-        reference.setValue(color);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();  // יצירת אובייקט של FirebaseDatabase
+        DatabaseReference reference = database.getReference("color");  // הפניה ל-"color" במסד הנתונים
+        reference.setValue(color);  // כתיבת הצבע החדש למסד הנתונים
     }
 }
+
